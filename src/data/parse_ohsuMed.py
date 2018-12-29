@@ -1,7 +1,13 @@
 import os
 from os.path import isfile, join
 from os import walk
+import re
+import pandas as pd
 
+"""
+this file takes the raw OHSU corpus in data/external/ and creates a pandas dataframe, 
+putting it in data/processed/ohsu_med.csv
+"""
 
 basepath=os.path.dirname(__file__)
 
@@ -85,4 +91,18 @@ for abstract_id, labels in test_label_dict.items():
 
     test_file.write(formatted_label+test_text_dict[abstract_id]+"\n")
 
-print(len(train_text_dict))
+
+labels, docs, splits = [], [], []
+
+for line in open("../../data/processed/ohsumed.train").read().splitlines():
+    labels.append(re.search('^(.+?),', line).group(1))
+    docs.append(re.search(',(.*)', line).group(1))
+    splits.append('train')
+
+for line in open("../../data/processed/ohsumed.test").read().splitlines():
+    labels.append(re.search('^(.+?),', line).group(1))
+    docs.append(re.search(',(.*)', line).group(1))
+    splits.append('test')
+
+df = pd.DataFrame({'label': labels, 'doc': docs, 'split': splits})
+df.to_csv("../../data/processed/ohsumed_abstracts.csv")
