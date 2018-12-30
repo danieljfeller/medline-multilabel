@@ -1,26 +1,50 @@
-import tensorflow as tf
-import keras.backend as K
+import pandas as pd
+import numpy as np
 
+def get_results_matrix(y_pred, y_test):
+    print("returns: dataframe with precision, recall, and F")
+    labels, accuracy, precision, recall, f1 = [], [], [], [], []
+    # iterate over each patient
+    for class_index in range(0, y_pred.shape[1]):
+        labels.append("Label #" + str(class_index))
 
-def f1(y_true, y_pred):
-    y_pred = K.round(y_pred)
-    tp = K.sum(K.cast(y_true*y_pred, 'float'), axis=0)
-    # tn = K.sum(K.cast((1-y_true)*(1-y_pred), 'float'), axis=0)
-    fp = K.sum(K.cast((1-y_true)*y_pred, 'float'), axis=0)
-    fn = K.sum(K.cast(y_true*(1-y_pred), 'float'), axis=0)
+        # assign true/false to each prediction
+        true_neg, true_pos, false_pos, false_neg = 0, 0, 0, 0
+        for row_index in range(0, y_pred.shape[0]):
+            predictedLabel = np.round(y_pred[row_index, class_index])
+            actualLabel = y_test[row_index, class_index]
+            if predictedLabel == 0 and predictedLabel == actualLabel:
+                true_neg += 1
+            elif predictedLabel == 0 and predictedLabel != actualLabel:
+                false_pos += 1
+            elif predictedLabel == 1 and predictedLabel == actualLabel:
+                true_pos += 1
+            elif predictedLabel == 1 and predictedLabel != actualLabel:
+                false_neg += 1
+            else:
+                continue
 
-    p = tp / (tp + fp + K.epsilon())
-    r = tp / (tp + fn + K.epsilon())
+        # precision
+        try:
+            p = true_pos / (true_pos + false_pos)
+        except:
+            p = 0
+        precision.append(p)
+        # recall
+        try:
+            r = true_pos / (true_pos + false_neg)
+        except:
+            r = 0
+        recall.append(r)
+        # f1 score
+        try:
+            f1.append((2 * p * r) / (p + r))
+        except:
+            f1.append(0)
 
-    f1 = 2*p*r / (p+r+K.epsilon())
-    f1 = tf.where(tf.is_nan(f1), tf.zeros_like(f1), f1)
-    #return K.mean(f1)
+    results = pd.DataFrame({'label': labels,
+                            'precision': precision,
+                            'recall': recall,
+                            'f1': f1})
 
-def evaluate_model(test_documents, test_labels, batch_size):
-    # returns a
-    score = model.evaluate(test_documents, test_labels,
-                           batch_size=batch_size, verbose=1)
-
-    predicted_labels = model.predict(test_documents, verbose=1)
-    print(metrics.f1(test_labels, predicted_labels))
-    # print('F1: ' + str(metrics.f1(test_labels, predicted_labels)))
+    return results
