@@ -10,9 +10,6 @@ Experiments related to multilabel document classification, using the OHSUmed cor
 The Ohsumed test collection is a subset of the MEDLINE database, which is a bibliographic database of important, peer-reviewed medical literature maintained by the National Library of Medicine. The subset we consider is the collection consisting of the first 20,000 documents from the 50,216 medical abstracts of the year 1991. The classification scheme consists of the 23 Medical Subject Headings (MeSH) categories of cardiovascular diseases group . After selecting such category subset, the document number is 13,929 (6,286 for training and 7,643 for testing in the standard split). Of the 23 categories of the cardiovascular diseases group, we consider the standard subset consisting of the 10 most frequent (O10).
 
 ### Project Organization
-
-We use the default [Cookie Cutter Data Science](https://drivendata.github.io/cookiecutter-data-science/) project template. This is a great resource for organizing projects that are easily for your colleaugues to read (and perhaps more importantly, yourself!)
-
 ------------
 
     ├── LICENSE
