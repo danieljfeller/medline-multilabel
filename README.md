@@ -1,7 +1,10 @@
 medline-multilabel
 ==============================
 
-Experiments related to multmultilabel document classification, using the OHSUmed corpus of annotated Medline abstracts. 
+Experiments related to multmultilabel document classification, using the OHSUmed corpus of annotated Medline abstracts.
+
+![](./docs/medline_image.png)
+
 
 Project Organization
 ------------
